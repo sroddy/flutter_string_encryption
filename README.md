@@ -47,7 +47,7 @@ password before encrypting/decrypting your strings.
 ```dart
 final String password = "user_provided_password";
 final String salt = cryptor.generateSalt();
-final String key = crypto.getKeyFromPasswordAndSalt(password, salt);
+final String key = crypto.generateKeyFromPassword(password, salt);
 ```
 
 ## Encrypt A String
@@ -57,8 +57,12 @@ final String encrypted = cryptor.encrypt("A string to encrypt.", key);
 
 ## Decrypt A String
 ```dart
-final String decrypted = cryptor.decrypt(encrypted, key);
-print(decrypted); // - A string to encrypt.
+try {
+  final String decrypted = cryptor.decrypt(encrypted, key);
+  print(decrypted); // - A string to encrypt.
+} on MacMismatchException {
+  // unable to decrypt (wrong key or forged data)
+}
 ```
 
 # License

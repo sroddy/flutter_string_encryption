@@ -24,11 +24,29 @@ class _MyAppState extends State<MyApp> {
     final cryptor = new PlatformStringCryptor();
 
     final key = await cryptor.generateRandomKey();
+    print("randomKey: $key");
+
     final string = "here is the string, here is the string.";
     final encrypted = await cryptor.encrypt(string, key);
     final decrypted = await cryptor.decrypt(encrypted, key);
 
     assert(decrypted == string);
+
+    final wrongKey =
+        "jIkj0VOLhFpOJSpI7SibjA==:RZ03+kGZ/9Di3PT0a3xUDibD6gmb2RIhTVF+mQfZqy0=";
+
+    try {
+      await cryptor.decrypt(encrypted, wrongKey);
+    } on MacMismatchException {
+      print("wrongly decrypted");
+    }
+
+    final salt = "Ee/aHwc6EfEactQ00sm/0A=="; // await cryptor.generateSalt();
+    final password = "a_strong_password%./😋";
+    final generatedKey = await cryptor.generateKeyFromPassword(password, salt);
+    print("salt: $salt, key: $generatedKey");
+
+    assert(generatedKey == wrongKey);
 
     setState(() {
       _randomKey = key;
@@ -46,7 +64,7 @@ class _MyAppState extends State<MyApp> {
         ),
         body: new Center(
           child: new Text(
-            'Random key: $_randomKey\n\nString: $_string\n\nEncrypted: $_encrypted'),
+              'Random key: $_randomKey\n\nString: $_string\n\nEncrypted: $_encrypted'),
         ),
       ),
     );

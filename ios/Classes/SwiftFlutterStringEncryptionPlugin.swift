@@ -25,10 +25,11 @@ public class SwiftFlutterStringEncryptionPlugin: NSObject, FlutterPlugin {
 
         result(decrypted)
       } catch (CryptoError.macMismatch) {
-        result(FlutterError(code: "mac_mismatch", message: "mac mismatch", details: nil))
+        result(FlutterError(code: "mac_mismatch", message: "mac don't match", details: nil))
       } catch {
         fatalError("\(error)")
       }
+
     case "encrypt":
       guard let args = call.arguments as? [String: String] else {
         fatalError("args are formatted badly")
@@ -46,6 +47,23 @@ public class SwiftFlutterStringEncryptionPlugin: NSObject, FlutterPlugin {
       let keyString = key.base64EncodedString
 
       result(keyString)
+
+    case "generate_salt":
+      let salt = AESHMACKeys.generateSalt()
+
+      result(salt)
+
+    case "generate_key_from_password":
+      guard let args = call.arguments as? [String: String] else {
+        fatalError("args are formatted badly")
+      }
+      let password = args["password"]!
+      let salt = args["salt"]!
+
+      let key = AESHMACKeys(password: password, salt: salt)
+
+      result(key.base64EncodedString)
+
     default: result(FlutterMethodNotImplemented)
     }
   }
@@ -95,6 +113,8 @@ struct AESHMACKeys {
   static let aesKeyLengthBits = 128
   static let ivLengthBytes = 16
   static let hmacKeyLengthBits = 256
+  static let pbeSaltLenghtBits = aesKeyLengthBits // same size as key output
+  static let pbeIterationCount: UInt32 = 10000
 
   let aes: Data
   let hmac: Data
@@ -103,6 +123,22 @@ struct AESHMACKeys {
     let array = base64AESAndHMAC.split(separator: ":")
     self.aes = Data(base64Encoded: String(array[0]))!
     self.hmac = Data(base64Encoded: String(array[1]))!
+  }
+
+  init(password: String, salt: String) {
+    let password = password.data(using: String.Encoding.utf8)!
+    let salt = Data(base64Encoded: salt)!
+    let keyLength = AESHMACKeys.aesKeyLengthBits / 8 + AESHMACKeys.hmacKeyLengthBits / 8
+    let derivedKey = try! password.derivedKey(
+      salt,
+      pseudoRandomAlgorithm: .sha1,
+      rounds: AESHMACKeys.pbeIterationCount,
+      derivedKeyLength: keyLength
+    )
+
+    // Split the random bytes into two parts:
+    self.aes = derivedKey.subdata(in: 0..<AESHMACKeys.aesKeyLengthBits / 8)
+    self.hmac = derivedKey.subdata(in: AESHMACKeys.aesKeyLengthBits / 8..<keyLength)
   }
 
   init(aes: Data, hmac: Data) {
@@ -115,6 +151,11 @@ struct AESHMACKeys {
     let hmac = try! Data.random(AESHMACKeys.hmacKeyLengthBits / 8)
 
     return .init(aes: aes, hmac: hmac)
+  }
+
+  static func generateSalt() -> String {
+    let salt = try! Data.random(pbeSaltLenghtBits / 8)
+    return salt.base64EncodedString()
   }
 
   func encrypt(string: String) -> CipherIvMac {

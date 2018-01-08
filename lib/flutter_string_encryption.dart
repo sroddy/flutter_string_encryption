@@ -9,19 +9,21 @@ abstract class StringCryptor {
 
   /// Gets a key from the given [password] and [salt]. [salt] can be generated
   /// with [generateSalt] while [password] is usually provided by the user.
-  Future<String> getKeyFromPasswordAndSalt(String password, String salt);
+  Future<String> generateKeyFromPassword(String password, String salt);
 
-  /// Generates a salt to use with [getKeyFromPasswordAndSalt]
+  /// Generates a salt to use with [generateKeyFromPassword]
   Future<String> generateSalt();
 
   /// Encrypts [string] using a [key] generated from [generateRandomKey] or
-  /// [getKeyFromPasswordAndSalt]. The returned string is a sequence of 3
+  /// [generateKeyFromPassword]. The returned string is a sequence of 3
   /// base64-encoded strings (iv, mac and cipherText) and can be transferred and
   /// stored almost anywhere.
   Future<String> encrypt(String string, String key);
 
   /// Decrypts [data] created with the [encrypt] method using a [key] created
-  /// with [generateRandomKey] or [getKeyFromPasswordAndSalt] methods.
+  /// with [generateRandomKey] or [generateKeyFromPassword] methods.
+  /// In case the [key] is wrong or the [data] has been forged, a
+  /// [MacMismatchException] is thrown
   Future<String> decrypt(String data, String key);
 }
 
@@ -37,11 +39,22 @@ class PlatformStringCryptor implements StringCryptor {
   PlatformStringCryptor._();
 
   @override
-  Future<String> decrypt(String data, String key) =>
-      _channel.invokeMethod("decrypt", {
+  Future<String> decrypt(String data, String key) async {
+    try {
+      final decrypted = await _channel.invokeMethod("decrypt", {
         "data": data,
         "key": key,
       });
+      return decrypted;
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case "mac_mismatch":
+          throw new MacMismatchException();
+        default:
+          rethrow;
+      }
+    }
+  }
 
   @override
   Future<String> encrypt(String string, String key) =>
@@ -58,9 +71,14 @@ class PlatformStringCryptor implements StringCryptor {
   Future<String> generateSalt() => _channel.invokeMethod("generate_salt");
 
   @override
-  Future<String> getKeyFromPasswordAndSalt(String password, String salt) =>
-      _channel.invokeMethod("get_key_from_password_and_salt", <String, String>{
+  Future<String> generateKeyFromPassword(String password, String salt) =>
+      _channel.invokeMethod("generate_key_from_password", <String, String>{
         "password": password,
         "salt": salt,
       });
+}
+
+class MacMismatchException implements Exception {
+  final String message =
+      "Mac don't match, either the password is wrong, or the message has been forged.";
 }

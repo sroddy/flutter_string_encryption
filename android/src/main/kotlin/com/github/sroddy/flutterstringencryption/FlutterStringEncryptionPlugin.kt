@@ -7,6 +7,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
 import com.tozny.crypto.android.AesCbcWithIntegrity.*
+import java.security.GeneralSecurityException
 
 class FlutterStringEncryptionPlugin(): MethodCallHandler {
   companion object {
@@ -24,9 +25,13 @@ class FlutterStringEncryptionPlugin(): MethodCallHandler {
         val keyString = call.argument<String>("key")
 
         val civ = CipherTextIvMac(data)
-        val decrypted = decryptString(civ, keys(keyString))
-
-        result.success(decrypted)
+        try {
+          val decrypted = decryptString(civ, keys(keyString))
+          result.success(decrypted)
+        } catch (e: GeneralSecurityException) {
+          print(e)
+          result.error("mac_mismatch", "Mac don't match", null)
+        }
       }
       "encrypt" -> {
         val string = call.argument<String>("string")
@@ -39,6 +44,22 @@ class FlutterStringEncryptionPlugin(): MethodCallHandler {
       "generate_random_key" -> {
         val key = generateKey()
         val keyString = keyString(key)
+
+        result.success(keyString)
+      }
+      "generate_salt" -> {
+        val salt = generateSalt()
+        val base64Salt = saltString(salt)
+
+        result.success(base64Salt)
+      }
+      "generate_key_from_password" -> {
+        val password = call.argument<String>("password")
+        val salt = call.argument<String>("salt")
+
+        val key = generateKeyFromPassword(password, salt)
+        val keyString = keyString(key)
+
         result.success(keyString)
       }
       else -> result.notImplemented()
