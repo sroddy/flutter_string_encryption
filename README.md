@@ -31,7 +31,7 @@ platform :ios, '9.0'
 ## Usage
 
 ```dart
-final PlatformStringCryptor cryptor = new PlatformStringCryptor();
+final cryptor = new PlatformStringCryptor();
 ```
 
 ## Generate A Secret Key
@@ -45,7 +45,7 @@ final String key = cryptor.generateRandomKey();
 Generate and (safely) store the salt, and then generate the key with a user-provided
 password before encrypting/decrypting your strings.
 ```dart
-final String password = "user_provided_password";
+final password = "user_provided_password";
 final String salt = cryptor.generateSalt();
 final String key = crypto.generateKeyFromPassword(password, salt);
 ```
