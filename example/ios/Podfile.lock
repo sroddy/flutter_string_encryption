@@ -1,0 +1,25 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_string_encryption (0.0.1):
+    - Flutter
+    - SCrypto (~> 2.0)
+  - SCrypto (2.0.0)
+
+DEPENDENCIES:
+  - Flutter (from `/Users/sroddy_bs/Flutter/flutter/bin/cache/artifacts/engine/ios`)
+  - flutter_string_encryption (from `/Users/sroddy_bs/Flutter/projects/flutter_string_encryption/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: /Users/sroddy_bs/Flutter/flutter/bin/cache/artifacts/engine/ios
+  flutter_string_encryption:
+    :path: /Users/sroddy_bs/Flutter/projects/flutter_string_encryption/ios
+
+SPEC CHECKSUMS:
+  Flutter: d674e78c937094a75ac71dd77e921e840bea3dbf
+  flutter_string_encryption: d94cd0baf2e2a7d0a9b6e94fc1a7fb68428d2a50
+  SCrypto: 8287dcf6151df38f9bc0efad2ed982c54a96d1b8
+
+PODFILE CHECKSUM: f47878d1f2b6a5e02b4b18880a92e02b17e2e91c
+
+COCOAPODS: 1.3.1
