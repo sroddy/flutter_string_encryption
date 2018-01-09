@@ -38,7 +38,7 @@ final cryptor = new PlatformStringCryptor();
 ### Randomly
 Generate it and store it in a safe place - e.g. the Keychain/KeyStore
 ```dart
-final String key = cryptor.generateRandomKey();
+final String key = await cryptor.generateRandomKey();
 ```
 
 ### Password-Based
@@ -46,19 +46,19 @@ Generate and (safely) store the salt, and then generate the key with a user-prov
 password before encrypting/decrypting your strings.
 ```dart
 final password = "user_provided_password";
-final String salt = cryptor.generateSalt();
-final String key = crypto.generateKeyFromPassword(password, salt);
+final String salt = await cryptor.generateSalt();
+final String key = await crypto.generateKeyFromPassword(password, salt);
 ```
 
 ## Encrypt A String
 ```dart
-final String encrypted = cryptor.encrypt("A string to encrypt.", key);
+final String encrypted = await cryptor.encrypt("A string to encrypt.", key);
 ```
 
 ## Decrypt A String
 ```dart
 try {
-  final String decrypted = cryptor.decrypt(encrypted, key);
+  final String decrypted = await cryptor.decrypt(encrypted, key);
   print(decrypted); // - A string to encrypt.
 } on MacMismatchException {
   // unable to decrypt (wrong key or forged data)
