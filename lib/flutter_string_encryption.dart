@@ -57,25 +57,35 @@ class PlatformStringCryptor implements StringCryptor {
   }
 
   @override
-  Future<String> encrypt(String string, String key) =>
-      _channel.invokeMethod("encrypt", {
-        "string": string,
-        "key": key,
-      });
+  Future<String> encrypt(String string, String key) async {
+    final String encrypted = await _channel.invokeMethod("encrypt", {
+      "string": string,
+      "key": key,
+    });
+    return encrypted;
+  }
 
   @override
-  Future<String> generateRandomKey() =>
-      _channel.invokeMethod("generate_random_key");
+  Future<String> generateRandomKey() async {
+    final String key = await _channel.invokeMethod("generate_random_key");
+    return key;
+  }
 
   @override
-  Future<String> generateSalt() => _channel.invokeMethod("generate_salt");
+  Future<String> generateSalt() async {
+    final String salt = await _channel.invokeMethod("generate_salt");
+    return salt;
+  }
 
   @override
-  Future<String> generateKeyFromPassword(String password, String salt) =>
-      _channel.invokeMethod("generate_key_from_password", <String, String>{
-        "password": password,
-        "salt": salt,
-      });
+  Future<String> generateKeyFromPassword(String password, String salt) async {
+    final String keyFromPassword = await _channel
+        .invokeMethod("generate_key_from_password", <String, String>{
+      "password": password,
+      "salt": salt,
+    });
+    return keyFromPassword;
+  }
 }
 
 class MacMismatchException implements Exception {
