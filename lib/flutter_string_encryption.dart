@@ -57,22 +57,23 @@ class PlatformStringCryptor implements StringCryptor {
   }
 
   @override
-  Future<String> encrypt(String string, String key) =>
-      _channel.invokeMethod("encrypt", {
+  Future<String> encrypt(String string, String key) async =>
+      await _channel.invokeMethod("encrypt", {
         "string": string,
         "key": key,
       });
 
   @override
-  Future<String> generateRandomKey() =>
-      _channel.invokeMethod("generate_random_key");
+  Future<String> generateRandomKey() async =>
+    await _channel.invokeMethod("generate_random_key");
 
   @override
-  Future<String> generateSalt() => _channel.invokeMethod("generate_salt");
+  Future<String> generateSalt() async =>
+    await _channel.invokeMethod("generate_salt");
 
   @override
-  Future<String> generateKeyFromPassword(String password, String salt) =>
-      _channel.invokeMethod("generate_key_from_password", <String, String>{
+  Future<String> generateKeyFromPassword(String password, String salt) async =>
+      await _channel.invokeMethod("generate_key_from_password", <String, String>{
         "password": password,
         "salt": salt,
       });
