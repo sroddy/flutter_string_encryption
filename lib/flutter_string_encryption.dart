@@ -29,14 +29,7 @@ abstract class StringCryptor {
 
 /// Implementation of [StringCryptor] using platform channels
 class PlatformStringCryptor implements StringCryptor {
-  static const MethodChannel _channel =
-      const MethodChannel('flutter_string_encryption');
-
-  static final _cryptor = new PlatformStringCryptor._();
-
-  factory PlatformStringCryptor() => _cryptor;
-
-  PlatformStringCryptor._();
+  static const MethodChannel _channel = const MethodChannel('flutter_string_encryption');
 
   @override
   Future<String> decrypt(String data, String key) async {
@@ -64,12 +57,10 @@ class PlatformStringCryptor implements StringCryptor {
       });
 
   @override
-  Future<String> generateRandomKey() async =>
-    await _channel.invokeMethod("generate_random_key");
+  Future<String> generateRandomKey() async => await _channel.invokeMethod("generate_random_key");
 
   @override
-  Future<String> generateSalt() async =>
-    await _channel.invokeMethod("generate_salt");
+  Future<String> generateSalt() async => await _channel.invokeMethod("generate_salt");
 
   @override
   Future<String> generateKeyFromPassword(String password, String salt) async =>
