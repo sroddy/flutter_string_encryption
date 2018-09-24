@@ -2,7 +2,7 @@ group 'com.github.sroddy.flutterstringencryption'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.2.50'
+    ext.kotlin_version = '1.2.51'
     repositories {
         google()
         jcenter()
