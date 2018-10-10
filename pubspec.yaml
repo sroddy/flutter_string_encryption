@@ -1,6 +1,6 @@
 name: flutter_string_encryption
 description: Cross-platform string encryption using common best-practices.
-version: 0.1.0
+version: 0.2.0
 author: Stefano Rodriguez <hlsroddy@gmail.com>
 homepage: https://github.com/sroddy/flutter_string_encryption
 
