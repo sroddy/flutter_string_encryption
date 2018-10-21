@@ -47,7 +47,7 @@ password before encrypting/decrypting your strings.
 ```dart
 final password = "user_provided_password";
 final String salt = await cryptor.generateSalt();
-final String key = await crypto.generateKeyFromPassword(password, salt);
+final String key = await cryptor.generateKeyFromPassword(password, salt);
 ```
 
 ## Encrypt A String
