@@ -15,7 +15,7 @@ Cross-platform string encryption using common best-practices
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'SCrypto', '~> 2.0'
+  s.dependency 'SCrypto', '~> 4.0.0'
   s.static_framework = true
 
   s.ios.deployment_target = '9.0'
