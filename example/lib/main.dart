@@ -9,9 +9,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _randomKey = 'Unknown';
+  String? _randomKey = 'Unknown';
   String _string = "Unknown";
-  String _encrypted = "Unknown";
+  String? _encrypted = "Unknown";
 
   @override
   initState() {
