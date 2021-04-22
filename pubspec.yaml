@@ -15,7 +15,7 @@ environment:
 # following page: https://www.dartlang.org/tools/pub/pubspec
 
 # The following section is specific to Flutter.
-# flutter:
-#   plugin:
-#     androidPackage: com.github.sroddy.flutterstringencryption
-#     pluginClass: FlutterStringEncryptionPlugin
+flutter:
+  plugin:
+    androidPackage: com.github.sroddy.flutterstringencryption
+    pluginClass: FlutterStringEncryptionPlugin
